@@ -2,12 +2,11 @@ package com.akr.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,37 +15,31 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.akr.model.Item;
-import com.akr.model.User;
 import com.akr.services.ItemService;
 
 @RestController
 public class ItemController {
 	@Autowired
 	ItemService  itemService;
-	
-	@RequestMapping(value = "/getAllItems", method = RequestMethod.GET)
-	public ModelAndView getAllItems(Model model) {
-		return null;
-		
-	}
+    private static final Logger logger = LoggerFactory.getLogger(ItemController.class);
+
 	
 	@RequestMapping(value = "/new_item", method = RequestMethod.GET)
 	public ModelAndView newItem(@ModelAttribute("item") Item item) {
 		ModelAndView modelAndView = new ModelAndView("new_item");
-		return modelAndView;
-		
+		return modelAndView;		
 	}
 	
 	
 	@RequestMapping(value = "/addItem", method = RequestMethod.POST)
 	public ModelAndView addItem(@ModelAttribute("item") Item item) {
+		logger.debug("Add Item request----");
 		Integer id = null;
 		List<Item> items = itemService.getAllItems();
 		id = items.get(items.size()-1).getId()+1;
 		UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = user.getUsername();
 		
-
 		ModelAndView modelAndView = new ModelAndView("operation_success_item");
 		try
 		{
@@ -56,17 +49,18 @@ public class ItemController {
 		}
 		catch(Exception e)
 		{
+			logger.error("Unable to add item:{}", e.toString());
 			modelAndView = new ModelAndView("operation_failed_item");
 			return modelAndView;
 		}
-		
+		logger.debug("Item added :{}", item.getName());
 		return modelAndView;
 		
 	}
 	
 	@RequestMapping("/deleteItem")
-	public ModelAndView deleteCustomerForm(@RequestParam Integer id) {
-		
+	public ModelAndView deleteItem(@RequestParam Integer id) {
+		logger.debug("delete item request------");
 		ModelAndView modelAndView = new ModelAndView("operation_success_item");
 		try
 		{
@@ -74,10 +68,11 @@ public class ItemController {
 		}
 		catch(Exception e)
 		{
+			logger.error("Unable to delete item:{}", e.toString());
 			modelAndView = new ModelAndView("operation_failed_item");
 			return modelAndView;
 		}
-		
+		logger.debug("Item deleted successfully:{}", id);
 		return modelAndView;	
 	}
 
@@ -93,6 +88,7 @@ public class ItemController {
 	
 	@RequestMapping(value = "/saveItem", method = RequestMethod.POST)
 	public ModelAndView saveItem(@ModelAttribute("item") Item item) {
+		logger.debug("Update item reqest----");
 		ModelAndView modelAndView = new ModelAndView("operation_success_item");
 		UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = user.getUsername();
@@ -104,9 +100,11 @@ public class ItemController {
 		}
 		catch(Exception e)
 		{
+			logger.error("unable to update item:{}", e.toString());
 			modelAndView = new ModelAndView("operation_failed_item");
 			return modelAndView;
 		}
+		logger.debug("Item updated successssullt:{}", item.getName());
 		return modelAndView;
 		
 	}

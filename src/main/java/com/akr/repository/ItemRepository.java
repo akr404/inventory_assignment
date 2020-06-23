@@ -22,6 +22,13 @@ public class ItemRepository {
 		return template.query("select * from item where category = ?",  new Object[] {category}, new BeanPropertyRowMapper(Item.class));
 		
 	}
+	
+	public List<Item> getAllItemsForSellerByCategory(String category, String username)
+	{
+		return template.query("select * from item where seller = ? and category = ?",  
+				new Object[] {category, username}, new BeanPropertyRowMapper(Item.class));
+		
+	}
 
 	public List<Item> getAllItemsByid(Integer id)
 	{

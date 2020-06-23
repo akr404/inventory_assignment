@@ -44,6 +44,11 @@ public class ItemService {
 	public List<Item> getAllItemsByCategory(String category) {
 		return itemRepository.getAllItemsByCategory(category);
 	}
+	
+	public List<Item> getAllItemsForSellerByCategory(String username, String category)
+	{
+		return itemRepository.getAllItemsForSellerByCategory(category, username);
+	}
 
 
 }
