@@ -33,6 +33,8 @@ public class UserService implements UserDetailsService{
 	public List<Authority> getUserAuthority(String username) {
 		return userRepository.getUserAuthority(username);
 	}
+	
+	//not used
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub

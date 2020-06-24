@@ -13,40 +13,40 @@ public class ItemRepository {
 	JdbcTemplate template;
 	public List<Item> getAllItems()
 	{
-		return template.query("select * from item", new BeanPropertyRowMapper(Item.class));
+		return template.query("select * from item where isdeleted = ?",  new Object[] {false}, new BeanPropertyRowMapper(Item.class));
 		
 	}
 	
 	public List<Item> getAllItemsByCategory(String category)
 	{
-		return template.query("select * from item where category = ?",  new Object[] {category}, new BeanPropertyRowMapper(Item.class));
+		return template.query("select * from item where category = ? and isdeleted = ?",  new Object[] {category, false}, new BeanPropertyRowMapper(Item.class));
 		
 	}
 	
 	public List<Item> getAllItemsForSellerByCategory(String category, String username)
 	{
-		return template.query("select * from item where seller = ? and category = ?",  
-				new Object[] {category, username}, new BeanPropertyRowMapper(Item.class));
+		return template.query("select * from item where seller = ? and category = ? and isdeleted = ?",  
+				new Object[] {category, username, false}, new BeanPropertyRowMapper(Item.class));
 		
 	}
 
 	public List<Item> getAllItemsByid(Integer id)
 	{
-		return template.query("select * from item where id = ?",  new Object[] {id}, new BeanPropertyRowMapper(Item.class));
+		return template.query("select * from item where id = ? and isdeleted = ?",  new Object[] {id, false}, new BeanPropertyRowMapper(Item.class));
 		
 	}
 	
 	public List<Item> getAllItemsBySeller(String seller)
 	{
-		return template.query("select * from item where seller = ?",  new Object[] {seller}, new BeanPropertyRowMapper(Item.class));
+		return template.query("select * from item where seller = ? and isdeleted = ?",  new Object[] {seller, false}, new BeanPropertyRowMapper(Item.class));
 		
 	}
 	
 	
 	public int deleteById(Integer id)
 	{
-		 String SQL = "delete from item where id = ?";
-		 return template.update(SQL,id);
+		 String SQL = "update item set isDeleted = ? where id = ?";
+		 return template.update(SQL,true, id);
 	}
 	
 	public int update(Item t)
@@ -56,9 +56,9 @@ public class ItemRepository {
 	}
 	public int insert(Item t)
 	{
-		return template.update("insert into item(id, name, category, description, seller)"
-				+ " values (?,?,?,?,?)", 
-				 new Object[] {t.getId(), t.getName(), t.getCategory(),t.getDescription(), t.getSeller()});
+		return template.update("insert into item(id, name, category, description, seller, isdeleted)"
+				+ " values (?,?,?,?,?,?)", 
+				 new Object[] {t.getId(), t.getName(), t.getCategory(),t.getDescription(), t.getSeller(), t.getIsDeleted()});
 	}
 }
 

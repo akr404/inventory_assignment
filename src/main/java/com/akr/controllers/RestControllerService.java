@@ -2,6 +2,8 @@ package com.akr.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +23,13 @@ public class RestControllerService {
 
 	@Autowired
 	ItemService  itemService;
-     
+
+    private static final Logger logger = LoggerFactory.getLogger(RestControllerService.class);
+    
     @GetMapping(path="/getAllItems", produces = "application/json")
     public List<Item> getAllItems() 
     {
+    	logger.debug("get all items of a seller");
     	UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = user.getUsername();
 		
@@ -34,6 +39,7 @@ public class RestControllerService {
     @GetMapping(path="/getAllItemsByCategory", produces = "application/json")
     public List<Item> getAllByCategory(@ModelAttribute("category") String category) 
     {
+    	logger.debug("get all items of a seller by given category");
     	UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = user.getUsername();
 		
@@ -42,6 +48,7 @@ public class RestControllerService {
     
 	@RequestMapping(value = "/addItem", method = RequestMethod.POST)
 	public List<Item> addItem(@ModelAttribute("item") Item item) {
+		logger.debug("add item----");
 		Integer id = null;
 		List<Item> items = itemService.getAllItems();
 		id = items.get(items.size()-1).getId()+1;
@@ -56,7 +63,7 @@ public class RestControllerService {
 		}
 		catch(Exception e)
 		{
-			
+			logger.error("unable to add item:{}", e.toString());
 		}
 		
 		return itemService.getAllItemsById(item.getId());
@@ -65,13 +72,14 @@ public class RestControllerService {
 	
 	@RequestMapping("/deleteItem")
 	public String deleteItem(@RequestParam Integer id) {
-		
+		logger.debug("delete item----");
 		try
 		{
 			itemService.deleteItem(id);
 		}
 		catch(Exception e)
 		{
+			logger.error("unable to delete item:{}", e.toString());
 			return "false";
 		}
 		
@@ -80,6 +88,7 @@ public class RestControllerService {
 	
 	@RequestMapping(value = "/editItem", method = RequestMethod.POST)
 	public List<Item> saveItem(@ModelAttribute("item") Item item) {
+		logger.debug("edit item----");
 		UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = user.getUsername();
 		
@@ -90,7 +99,7 @@ public class RestControllerService {
 		}
 		catch(Exception e)
 		{
-			
+			logger.error("unable to edit item:{}", e.toString());
 		}
 		return itemService.getAllItemsById(item.getId());
 		

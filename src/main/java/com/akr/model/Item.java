@@ -6,6 +6,13 @@ public class Item {
 	String description;
 	String category;
 	String seller;
+	Boolean isDeleted;
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 	public Integer getId() {
 		return id;
 	}

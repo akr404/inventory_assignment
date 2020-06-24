@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.akr.model.Item;
 import com.akr.services.ItemService;
+import com.akr.utils.Constants;
 
 @RestController
 public class ItemController {
@@ -26,7 +27,7 @@ public class ItemController {
 	
 	@RequestMapping(value = "/new_item", method = RequestMethod.GET)
 	public ModelAndView newItem(@ModelAttribute("item") Item item) {
-		ModelAndView modelAndView = new ModelAndView("new_item");
+		ModelAndView modelAndView = new ModelAndView(Constants.VIEW_NEW_ITEM);
 		return modelAndView;		
 	}
 	
@@ -40,7 +41,7 @@ public class ItemController {
 		UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = user.getUsername();
 		
-		ModelAndView modelAndView = new ModelAndView("operation_success_item");
+		ModelAndView modelAndView = new ModelAndView(Constants.VIEW_OPS_SUCCESS);
 		try
 		{
 			item.setId(id);
@@ -50,7 +51,7 @@ public class ItemController {
 		catch(Exception e)
 		{
 			logger.error("Unable to add item:{}", e.toString());
-			modelAndView = new ModelAndView("operation_failed_item");
+			modelAndView = new ModelAndView(Constants.VIEW_OPS_FAILED);
 			return modelAndView;
 		}
 		logger.debug("Item added :{}", item.getName());
@@ -61,7 +62,7 @@ public class ItemController {
 	@RequestMapping("/deleteItem")
 	public ModelAndView deleteItem(@RequestParam Integer id) {
 		logger.debug("delete item request------");
-		ModelAndView modelAndView = new ModelAndView("operation_success_item");
+		ModelAndView modelAndView = new ModelAndView(Constants.VIEW_OPS_SUCCESS);
 		try
 		{
 			itemService.deleteItem(id);
@@ -69,7 +70,7 @@ public class ItemController {
 		catch(Exception e)
 		{
 			logger.error("Unable to delete item:{}", e.toString());
-			modelAndView = new ModelAndView("operation_failed_item");
+			modelAndView = new ModelAndView(Constants.VIEW_OPS_FAILED);
 			return modelAndView;
 		}
 		logger.debug("Item deleted successfully:{}", id);
@@ -78,7 +79,7 @@ public class ItemController {
 
 	@RequestMapping(value = "/editItem", method = RequestMethod.GET)
 	public ModelAndView editItem(@RequestParam Integer id) {
-		ModelAndView mav = new ModelAndView("edit_item");
+		ModelAndView mav = new ModelAndView(Constants.VIEW_EDIT_ITEM);
 		Item item = itemService.getAllItemsById(id).get(0);
 		mav.addObject("item", item);
 		
@@ -89,7 +90,7 @@ public class ItemController {
 	@RequestMapping(value = "/saveItem", method = RequestMethod.POST)
 	public ModelAndView saveItem(@ModelAttribute("item") Item item) {
 		logger.debug("Update item reqest----");
-		ModelAndView modelAndView = new ModelAndView("operation_success_item");
+		ModelAndView modelAndView = new ModelAndView(Constants.VIEW_OPS_SUCCESS);
 		UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = user.getUsername();
 		
@@ -101,7 +102,7 @@ public class ItemController {
 		catch(Exception e)
 		{
 			logger.error("unable to update item:{}", e.toString());
-			modelAndView = new ModelAndView("operation_failed_item");
+			modelAndView = new ModelAndView(Constants.VIEW_OPS_FAILED);
 			return modelAndView;
 		}
 		logger.debug("Item updated successssullt:{}", item.getName());

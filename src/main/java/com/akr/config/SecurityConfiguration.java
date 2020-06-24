@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.akr.utils.Constants;
+
 
 @Configuration
 @EnableWebSecurity
@@ -44,8 +46,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 			.antMatchers("/").permitAll()
 			.antMatchers("/login").permitAll()
 			.antMatchers("/register").permitAll()
-			.antMatchers("/seller").hasAnyAuthority("seller")
-			.antMatchers("/user").hasAnyAuthority("user","seller")
+			.antMatchers("/seller").hasAnyAuthority(Constants.SELLER)
+			.antMatchers("/user").hasAnyAuthority(Constants.USER, Constants.SELLER)
 			.anyRequest().authenticated()
 			.and()
 			.csrf().disable() //rest of the configs below according to your needs.

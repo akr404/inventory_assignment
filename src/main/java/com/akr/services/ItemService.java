@@ -18,9 +18,11 @@ public class ItemService {
 
 
 	public void insertItem(Item t) {
+		t.setIsDeleted(false);
 		itemRepository.insert(t);
 	}
 	public void updateItem(Item t) {
+		t.setIsDeleted(false);
 		itemRepository.update(t);
 	}
 	
